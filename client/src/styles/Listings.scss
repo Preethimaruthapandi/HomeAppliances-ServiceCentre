@@ -1,0 +1,168 @@
+.categories-container {
+  display: flex;
+  gap: 15px;
+  overflow-x: auto;
+  padding: 15px;
+  background-color: white;
+  justify-content: center; /* Center categories */
+  align-items: center;
+  border-radius: 10px;
+}
+
+.categories-container::-webkit-scrollbar {
+  height: 6px;
+}
+
+.categories-container::-webkit-scrollbar-thumb {
+  background-color: #ccc;
+  border-radius: 5px;
+}
+
+.categories-container::-webkit-scrollbar-track {
+  background-color: #f0f0f0;
+}
+
+.category-btn {
+  display: flex;
+  flex-direction: column; /* Icon above text */
+  align-items: center;
+  gap: 8px;
+  padding: 10px;
+  border: none;
+  border-radius: 10px;
+  background-color: transparent;
+  cursor: pointer;
+  transition: color 0.3s ease, transform 0.2s ease;
+  font-size: 14px;
+  color: #333;
+  font-weight: bold;
+}
+
+.category-btn:hover {
+  transform: translateY(-5px); /* Hover animation */
+  color: #ff385c; /* Match the active color */
+}
+
+.category-btn.active {
+  color: #ff385c;
+  font-weight: bold;
+}
+
+.category-btn span {
+  font-size: 15px;
+  font-weight: 500;
+  text-align: center;
+  color: inherit;
+}
+
+.category-btn svg {
+  font-size: 35px; /* Icon size */
+  color: inherit;
+}
+
+.card {
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 4px 8px rgba(143, 133, 133, 0.3);
+  max-width: 280px; /* Limit the card width */
+  margin: 10px;
+  width: 100%; /* Ensures responsive resizing */
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  
+  
+}
+
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.card-image {
+  width: 100%;
+  height: 250px;
+  object-fit:fill; /* Avoid distortion */
+}
+
+.card-content {
+  padding: 10px;
+  text-align: left;
+  font-weight: 200;
+}
+
+.card-owner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 0;
+  font-size: 16px;
+  font-weight: bold;
+  color: #da092cca;
+}
+
+.card-place {
+  font-weight: bold;
+  color: #0f0606;
+  text-align: right;
+}
+
+.prof {
+  font-weight: bold;
+  color: #444;
+}
+
+.cards-container {
+  display: flex;
+  flex-wrap: wrap; /* Allow cards to wrap to the next line */
+  justify-content: center; /* Center cards horizontally */
+  gap: 20px; /* Space between the cards */
+  padding: 20px;
+}
+
+/* Photo Carousel Styles */
+.photo-container {
+  position: relative;
+  width: 100%;
+  height: 250px;
+  overflow: hidden;
+}
+
+.arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: rgba(0, 0, 0, 0.5);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+}
+
+.arrow.left-arrow {
+  left: 10px;
+}
+
+.arrow.right-arrow {
+  right: 10px;
+}
+
+.arrow:hover {
+  background-color: rgba(0, 0, 0, 0.7);
+}
+
+.arrow:focus {
+  outline: none;
+}
+
+
+
+
+
+

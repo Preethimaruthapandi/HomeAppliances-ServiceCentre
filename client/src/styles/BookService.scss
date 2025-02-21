@@ -1,0 +1,116 @@
+$primary-color: #ff385c;
+$secondary-color: #ffffff;
+$hover-color: lighten($primary-color, 10%);
+$border-radius: 8px;
+$box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+
+.book-service-container {
+  max-width: 850px;
+  margin: 0 auto;
+  padding: 2rem;
+  background-color: $secondary-color;
+  border-radius: $border-radius;
+  overflow: hidden;
+  font-family: 'Arial', sans-serif;
+}
+
+.rating-title, .reviews-title {
+  font-size: 1.5rem;
+  font-weight: 500;
+  color: $primary-color;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.star-rating {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+
+  .star {
+    cursor: pointer;
+    color: rgb(203, 194, 194);
+    transition: color 0.3s ease;
+
+    &:hover,
+    &.active {
+      color: rgb(230, 169, 14);
+    }
+  }
+}
+
+.textarea {
+  width: 100%;
+  padding: 1rem;
+  padding-right: 10px;
+  border: 1px solid #e2e8f0;
+  border-radius: $border-radius;
+  margin-bottom: 1.5rem;
+  font-size: 1rem;
+  resize: none;
+  outline: none;
+
+  &:focus {
+    border-color: $primary-color;
+  }
+}
+
+.button-container {
+  display: flex;
+  justify-content: space-between;
+
+  button {
+    padding: 0.6rem 1rem;
+    font-size: 1rem;
+    border-radius: $border-radius;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s;
+
+    &.submit-button {
+      background-color: $primary-color;
+      color: $secondary-color;
+
+      &:hover {
+        background-color: $hover-color;
+      }
+    }
+
+    &.book-button {
+      background-color: #150548;
+      color: $secondary-color;
+
+      &:hover {
+        background-color: rgb(50, 34, 163);
+      }
+    }
+  }
+}
+
+.reviews-container {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.review-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.profile-image {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.user-name {
+  font-weight: bold;
+}
+
+.review-content {
+  font-size: 14px;
+  color: #555;
+}

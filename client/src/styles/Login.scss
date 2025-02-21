@@ -1,0 +1,142 @@
+@import "./variables.scss";
+@import "./breakpoints.scss";
+
+.login {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  background: url("../../public/assets/login.jpg") center;
+  background-size: cover;
+
+  &_content {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    width: 40%;
+    padding: 40px;
+    background-color: rgba(0, 0, 0, 0.8);
+    border-radius: 20px;
+
+    @include lg {
+      width: 60%;
+    }
+
+    @include mm {
+      width: 80%;
+    }
+
+    &_form {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 15px;
+      width: 100%;
+
+      .password-input-wrapper {
+        position: relative;
+        width: 100%;
+
+        input {
+          width: 100%;
+          padding: 7px  15px; // Adjust for the toggle icon
+          background-color: transparent;
+          border: none;
+          border-bottom: 1px solid rgba(104, 103, 103, 0.3);
+          outline: none;
+          text-align: left; // Align text to the left
+          color: white;
+          box-sizing: border-box;
+
+          &::placeholder {
+            color: white;
+          }
+
+          &:focus {
+            background: transparent;
+          }
+        }
+
+        .toggle-password-icon {
+          position: absolute;
+          top: 50%;
+          right: 10px;
+          transform: translateY(-50%);
+          cursor: pointer;
+          color: rgb(119, 112, 112);
+          font-size: 1.2em;
+
+          &:hover {
+            color: #716d6d;
+          }
+        }
+      }
+
+      input {
+        width: 100%; // Make all input fields consistent
+        padding: 7px 10px;
+        background-color: transparent;
+        border: none;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+        outline: none;
+        text-align: center;
+        color: white;
+
+        &::placeholder {
+          color: white;
+        }
+
+        &:focus {
+          background: transparent;
+        }
+      }
+
+      button {
+        margin-top: 15px;
+        border-radius: 30px;
+        @include buttonStyle;
+        width: 60%;
+        padding: 10px;
+        font-size: 16px;
+        color: #fff;
+        background: linear-gradient(45deg, #df1111db, #00d4ff);
+
+        &:hover {
+          box-shadow: 0 0 10px 3px rgba(255, 255, 255);
+        }
+      }
+    }
+
+    &_google {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      margin-top: 20px;
+      border-radius: 30px;
+    }
+
+    a {
+      text-decoration: none;
+      color: white;
+      font-size: 17px;
+      font-weight: 600;
+      text-align: center;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+
+    p {
+      color: white;
+      font-size: 13px;
+      text-align: center;
+    }
+    .forgot-password-link{
+      cursor: pointer;
+      font-size:15px;
+    }
+  }
+}

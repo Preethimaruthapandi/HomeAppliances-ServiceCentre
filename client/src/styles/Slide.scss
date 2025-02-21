@@ -1,0 +1,25 @@
+
+.slide {
+    width: 100vw;
+    height: 100vh;
+    background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),
+      url("../../public/assets/slide.jpg");
+    background-position: center top;
+    background-size: cover;
+    
+  
+    h1 {
+      padding: 40px 20px;
+      font-size: 35px;
+      text-align: center;
+      color: white;
+      filter: brightness(100%);
+    }
+    .sree{
+     color: rgb(71, 236, 71);
+    }
+    .pres{
+      color: rgb(241, 45, 45);
+    }
+  }
+  

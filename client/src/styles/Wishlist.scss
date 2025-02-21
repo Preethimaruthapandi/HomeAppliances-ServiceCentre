@@ -1,0 +1,29 @@
+
+
+.wishlist-container {
+  padding-top: 5px;
+  padding-left: 10px;
+  background-color: #fcfdfd;
+  min-height: 100vh;
+}
+
+.wishlist-title {
+  text-align: left;
+  font-size: 28px;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.cards-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+}
+
+.empty-wishlist {
+  text-align: center;
+  font-size: 18px;
+  color: #6c757d;
+  margin-top: 50px;
+}

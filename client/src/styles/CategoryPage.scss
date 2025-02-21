@@ -1,0 +1,23 @@
+/* CategoryPage.scss */
+
+.category-page {
+    padding: 20px;
+    background-color: #fbfdff;
+    min-height: 100vh;
+    text-align: left;
+    font-size: 28px;
+    margin-bottom: 20px;
+    color: #333;
+      
+      
+  }
+  
+  
+  .cards-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+  }
+  
+  
