@@ -1,34 +1,39 @@
 const mongoose = require("mongoose");
 
-const BookingSchema = new mongoose.Schema(
-  {
-    customerId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-    },
-    hostId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-    },
-    listingId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Listing",
-    },
-    startDate: {
-      type: String,
-      required: true,
-    },
-    endDate: {
-      type: String,
-      required: true,
-    },
-    totalPrice: {
-      type: Number,
-      required: true,
-    },
+const bookingSchema = new mongoose.Schema({
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+    required: true,
   },
-  { timestamps: true }
-);
+  serviceExpertId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "ServiceExpert",
+    required: true,
+  },
+  categories: [
+    {
+      label: { type: String, required: true },
+      count: { type: Number, required: true },
+      cost: { type: Number, required: true },
+      warrantyStartDate: { type: Date },
+      warrantyYears: { type: Number },
+      warrantyStatus: { type: String, enum: ["Valid", "Expired", ""] },
+      isPrestige: { type: Boolean, default: false },
+    },
+  ],
+  applianceImages: [{ type: String, required: true}], // Store image URLs or file paths
+  serviceDate: { type: Date, required: true },
+  warrantyCard: { type: String }, // URL or path of the uploaded warranty card
+  proofs: [{ type: String }], // URLs or paths of additional proof images
+  totalAmount: { type: Number, required: true },
+  bookingStatus: {
+    type: String,
+    enum: ["Pending", "Confirmed", "Completed", "Cancelled"],
+    default: "Pending",
+  },
+  createdAt: { type: Date, default: Date.now },
+});
 
-const Booking = mongoose.model("Booking", BookingSchema)
-module.exports = Booking
+const Booking = mongoose.model("Booking", bookingSchema);
+module.exports = Booking;

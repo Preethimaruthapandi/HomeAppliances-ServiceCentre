@@ -1,83 +1,27 @@
-const mongoose = require("mongoose")
+const mongoose = require('mongoose');
 
-const ListingSchema = new mongoose.Schema(
+const listingSchema = new mongoose.Schema(
   {
-    creator: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'User',
-    },
-    category: {
-      type: String,
-      required: true,
-    },
-    type: {
-      type: String,
-      required: true,
-    },
-    streetAddress: {
-      type: String,
-      required: true,
-    },
-    aptSuite: {
-      type: String,
-      required: true,
-    },
-    city: {
-      type: String,
-      required: true,
-    },
-    province: {
-      type: String,
-      required: true,
-    },
-    country: {
-      type: String,
-      required: true,
-    },
-    guestCount: {
-      type: Number,
-      required: true,
-    },
-    bedroomCount: {
-      type: Number,
-      required: true,
-    },
-    bedCount: {
-      type: Number,
-      required: true,
-    },
-    bathroomCount: {
-      type: Number,
-      required: true,
-    },
-    amenities: {
-      type: Array,
-      default:[]
-    },
-    listingPhotoPaths: [{ type: String }], // Store photo URLs
-    title: {
-      type: String,
-      required: true
-    },
-    description: {
-      type: String,
-      required: true
-    },
-    highlight: {
-      type: String,
-      required: true
-    },
-    highlightDesc: {
-      type: String,
-      required: true
-    },
-    price: {
-      type: Number,
-      required: true,
-    }
+    fullName: { type: String, required: true },
+    address: { type: String, required: true },
+    phoneNumber: { type: String, required: true },
+    email: { type: String, required: true, unique: true },
+    dateOfBirth: { type: Date, required: true },
+    educationalQualifications: { type: String, required: true },
+    degreeCertificate: { type: String, required: true }, // Single file path or URL
+    technicalCertifications: { type: [String] }, // Array of file paths or URLs
+    workExperience: { type: String }, // Updated to match textarea input from form
+    experienceCertificate: { type: String, required: true }, // Single file path or URL
+    keySkills: { type: String }, // Updated to match textarea input from form
+    serviceReports: { type: String, required: true }, // Array of file paths or URLs for multiple uploads
+    userQuery: { type: String }, // To handle the query section in the form
+    status: { type: String, enum: ['pending', 'approved', 'denied'], default: 'pending' },
+    user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true }, // Reference to the user who submitted the form
+    available: { type: Boolean, default: false },
   },
-  { timestamps: true}
-)
+  { timestamps: true }
+);
 
-const Listing = mongoose.model("Listing", ListingSchema )
-module.exports = Listing
+const Listing = mongoose.models.Listing || mongoose.model('Listing', listingSchema);
+
+module.exports = Listing;

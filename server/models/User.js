@@ -23,22 +23,22 @@ const UserSchema = new mongoose.Schema(
       type: String,
       default: "",
     },
-    tripList: {
-      type: Array,
-      default: [],
-    },
+    
     wishList: {
       type: Array,
       default: [],
     },
-    propertyList: {
+    
+    bookList: {
       type: Array,
       default: [],
     },
-    reservationList: {
-      type: Array,
-      default: [],
-    }
+    
+    role: {
+      type: String,
+      enum: ["user", "admin"],// Restrict values to 'user' or 'admin'
+      default: "user", // Default role is 'user'
+    },
   },
   { timestamps: true }
 )
