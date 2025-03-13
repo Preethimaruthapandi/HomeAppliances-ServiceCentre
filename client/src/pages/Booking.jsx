@@ -7,8 +7,10 @@ import {jwtDecode} from "jwt-decode";
 import { Delete } from "@mui/icons-material";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
+import RazorpayButton from "../components/RazorpayButton";
 import { categories as predefinedCategories } from "../data";
 import "../styles/Booking.scss";
+
 
 const BookingPage = () => {
   const { id } = useParams();
@@ -32,6 +34,12 @@ const BookingPage = () => {
 
   const [isPrestige, setIsPrestige] = useState(false);
   const [isBookingConfirmed, setIsBookingConfirmed] = useState(false);
+
+  const [mobileNumber, setMobileNumber] = useState("");
+  const [address, setAddress] = useState("");
+  const [mobileError, setMobileError] = useState("");
+  const [isPaymentSuccessful, setIsPaymentSuccessful] = useState(false);
+
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -190,6 +198,15 @@ const BookingPage = () => {
     }
   };
 
+    // 📌 Function to validate mobile number
+    const handleMobileChange = (e) => {
+      const value = e.target.value;
+      if (/^\d{0,10}$/.test(value)) {
+        setMobileNumber(value);
+        setMobileError(value.length === 10 ? "" : "Enter a valid 10-digit number");
+      }
+    };
+
 
   const handleBooking = async () => {
   if (!Object.keys(selectedCategories).length || uploadedPhotos.length === 0 || !serviceDate) {
@@ -223,6 +240,8 @@ const BookingPage = () => {
   formData.append("serviceDate", serviceDate);
   formData.append("serviceExpertId", serviceExpertId);
   formData.append("totalAmount", Number(totalServiceCharge));
+  formData.append("mobileNo", mobileNumber);
+  formData.append("address", address);
 
   // Append images
   uploadedPhotos.forEach((photo) => {
@@ -236,6 +255,8 @@ const BookingPage = () => {
   proofs.forEach((proof) => {
     formData.append("proofs", proof);
   });
+
+  
 
   try {
     const response = await axios.post("http://localhost:3001/api/bookings", formData, {
@@ -253,6 +274,8 @@ const BookingPage = () => {
     console.error("Error booking service:", error);
   }
 };
+
+const totalAmount = Number(calculateTotalServiceCharge());
 
   return (
     <>
@@ -472,10 +495,6 @@ const BookingPage = () => {
 
   </Box>
 ))}
-
-
-       
-
         <br></br>
         <Typography variant="h6">Service dates within the next 3 days and beyond one month are not allowed. </Typography>
         <br></br>
@@ -512,6 +531,26 @@ const BookingPage = () => {
   InputLabelProps={{ shrink: true }}
 />
 
+ <TextField
+        label="Mobile Number"
+        variant="outlined"
+        fullWidth
+        value={mobileNumber}
+        onChange={handleMobileChange}
+        error={!!mobileError}
+        helperText={mobileError}
+        margin="normal"
+      />
+      <TextField
+        label="Address"
+        variant="outlined"
+        fullWidth
+        multiline
+        rows={3}
+        value={address}
+        onChange={(e) => setAddress(e.target.value)}
+        margin="normal"
+      />
 
 <Typography variant="h6" color="textSecondary">
   Service Timing: 9:00 AM - 6:00 PM
@@ -520,9 +559,27 @@ const BookingPage = () => {
         <Typography variant="h6">
   {`Total Service Charge: ₹${Number(calculateTotalServiceCharge()) || 0}`}
 </Typography>
+<br />
 
-<br></br>
-        <Button variant="contained" color="primary" onClick={handleBooking} className="booking-button">Book Service</Button>
+ {/* Razorpay Payment Button (only if totalAmount > 0) */}
+ {totalAmount > 0 && (
+        <RazorpayButton
+          id="razorpay-button"
+          amount={totalAmount}
+          onSuccess={() => setIsPaymentSuccessful(true)} // ✅ Update payment status
+        />
+      )}
+
+      {/* Booking Button - Enabled if payment is successful OR no payment needed */}
+      <Button
+        variant="contained"
+        color="primary"
+        onClick={handleBooking}
+        className="booking-button"
+        disabled={totalAmount > 0 && !isPaymentSuccessful} // ✅ Payment required before booking
+      >
+        Book Service
+      </Button>
       </Box>
 
       <Footer />

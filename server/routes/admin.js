@@ -250,6 +250,7 @@ router.get("/bookings/all", verifyAdmin, async (req, res) => {
         path: "serviceExpertId",
         populate: { path: "listingId", populate: { path: "user", select: "fullName profileImagePath" } },
       })
+      .populate({ path: "userId", select: "firstName lastName email" })
       .lean();
 
     res.status(200).json(bookings);

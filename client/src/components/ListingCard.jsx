@@ -95,7 +95,7 @@ const Card = ({ listing, isLiked, onToggleWishList }) => {
         <p className="card-categories">
           <span className="prof">Proficiency: </span>
           {listing.categories?.map((cat, index) => (
-  <span key={index} className="category">{cat.label}</span>
+  <span key={index} className="category">{cat.label},   </span>
 ))}
 
         </p>

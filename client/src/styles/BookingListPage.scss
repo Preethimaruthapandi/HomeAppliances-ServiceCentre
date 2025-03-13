@@ -1,27 +1,69 @@
+// Booking List Page Styling
 .booking-list-container {
-  max-width: 900px;
-  margin: 40px auto;
-  padding: 20px;
-  background: #f9f9f9;
+  max-width: 1200px;
+  margin: auto;
+  padding: 2rem;
+  background: #f8f9fa;
   border-radius: 10px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 
   h2 {
     text-align: center;
-    color: #333;
-    margin-bottom: 20px;
+    margin-bottom: 1.5rem;
+    font-size: 2rem;
+    color: #F8395A;
+  }
+
+  // Improved Filter Styling
+  .filter-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    gap: 0.8rem;
+
+    label {
+      font-size: 20px;
+      color: #333;
+      font-weight: bold;
+    }
+
+    select {
+      width: 1000px;  // Wider select box
+      padding: 0.7rem 1rem;
+      border-radius: 8px;
+      border: 2px solid #ddd;
+      font-size: 1rem;
+      cursor: pointer;
+      background: #ffffff;
+      transition: all 0.3s ease;
+      font-weight: 500;
+      color: #333;
+
+      &:hover {
+        color: #fff;
+        border-color: #F8395A;
+      }
+
+      &:focus {
+        outline: none;
+        border-color: #F8395A;
+        box-shadow: 0 0 8px rgba(248, 57, 90, 0.4);
+      }
+    }
   }
 
   .category-summary {
     background: #fff;
-    padding: 15px;
+    padding: 1rem;
     border-radius: 8px;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-    margin-bottom: 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    margin-bottom: 1.5rem;
+    text-align: center;
 
     h3 {
-      margin-bottom: 10px;
-      color: #444;
+      font-size: 1.2rem;
+      margin-bottom: 0.5rem;
     }
 
     ul {
@@ -29,87 +71,86 @@
       padding: 0;
 
       li {
-        padding: 5px 0;
-        font-size: 14px;
-        color: #666;
+        font-size: 1rem;
+        color: #4a4747;
+        padding: 0.3rem 0;
       }
     }
   }
 
   .booking-card {
-    background: #fff;
-    padding: 20px;
-    margin: 15px 0;
-    border-radius: 8px;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    background: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
     display: flex;
-    flex-direction: column;
     align-items: center;
-    transition: transform 0.2s ease-in-out;
+    gap: 1rem;
+    transition: transform 0.3s ease;
 
     &:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+      transform: translateY(-5px);
     }
 
     .profile-image {
-      width: 70px;
-      height: 70px;
+      width: 80px;
+      height: 80px;
       border-radius: 50%;
       object-fit: cover;
       border: 2px solid #ddd;
     }
 
     h3 {
-      font-size: 18px;
-      color: #444;
-      margin: 10px 0;
+      font-size: 1.4rem;
+      color: #191616;
     }
 
     p {
-      font-size: 14px;
-      color: #666;
-      margin: 5px 0;
+      font-size: 1rem;
+      color: #131212;
     }
 
-    .category-list {
-      margin-top: 10px;
+    .status-tag {
+      font-weight: bold;
+      padding: 5px 10px;
+      border-radius: 5px;
+      display: inline-block;
+      text-transform: uppercase;
+      font-size: 0.9rem;
 
-      h4 {
-        color: #555;
-        margin-bottom: 5px;
+      &.pending {
+        background: #ffcc00;
+        color: #fff;
       }
-
-      ul {
-        list-style: none;
-        padding: 0;
-        display: flex;
-        flex-wrap: wrap;
-        gap: 5px;
-
-        li {
-          background: #e0e0e0;
-          padding: 5px 10px;
-          border-radius: 5px;
-          font-size: 13px;
-          color: #333;
-        }
+      &.confirmed {
+        background: #007bff;
+        color: #fff;
+      }
+      &.completed {
+        background: #28a745;
+        color: #fff;
+      }
+      &.cancelled {
+        background: #dc3545;
+        color: #fff;
       }
     }
   }
-}
 
-/* Responsive Design */
-@media (max-width: 768px) {
-  .booking-list-container {
-    padding: 15px;
-  }
+  @media (max-width: 768px) {
+    .booking-card {
+      flex-direction: column;
+      text-align: center;
+    }
 
-  .category-summary {
-    text-align: center;
-  }
+    .filter-container {
+      flex-direction: column;
+      gap: 0.5rem;
 
-  .booking-card {
-    text-align: center;
+      select {
+        width: 100%;
+      }
+    }
   }
 }

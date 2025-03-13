@@ -9,9 +9,11 @@ import Footer from "../components/Footer";
 const BookingList = () => {
   const dispatch = useDispatch();
   const token = useSelector((state) => state.token);
-  const userId = useSelector((state) => state.user?._id); // Get userId from Redux
+  const userId = useSelector((state) => state.user?._id);
   const [bookings, setBookingsState] = useState([]);
+  const [filteredBookings, setFilteredBookings] = useState([]);
   const [categoryCounts, setCategoryCounts] = useState({});
+  const [statusFilter, setStatusFilter] = useState("All");
 
   useEffect(() => {
     if (!token || !userId) {
@@ -23,17 +25,14 @@ const BookingList = () => {
     const fetchBookings = async () => {
       try {
         const { data } = await axios.get(
-          `http://localhost:3001/api/bookings/${userId}`, // Fetch bookings using userId from Redux
+          `http://localhost:3001/api/bookings/${userId}`,
           { headers: { Authorization: `Bearer ${token}` } }
         );
 
-        console.log("Booking API response:", data);
-
         if (Array.isArray(data)) {
           setBookingsState(data);
-          dispatch(setBookingList(data.map((booking) => booking._id))); // Store IDs in Redux
+          dispatch(setBookingList(data.map((booking) => booking._id)));
 
-          // Count categories
           const categoryCounter = {};
           data.forEach((booking) => {
             booking.categories?.forEach((category) => {
@@ -50,13 +49,37 @@ const BookingList = () => {
     fetchBookings();
   }, [token, userId, dispatch]);
 
+  useEffect(() => {
+    if (statusFilter === "All") {
+      setFilteredBookings(bookings);
+    } else {
+      setFilteredBookings(bookings.filter((booking) => booking.bookingStatus === statusFilter));
+    }
+  }, [statusFilter, bookings]);
+
   return (
     <div>
       <Navbar />
       <div className="booking-list-container">
         <h2>Your Bookings</h2>
 
-        {/* Display category count */}
+        {/* Status Filter */}
+        <div className="filter-container">
+          <label htmlFor="statusFilter">Filter by Status:</label>
+          <select
+            id="statusFilter"
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value)}
+          >
+            <option value="All">All</option>
+            <option value="Pending">Pending</option>
+            <option value="Confirmed">Confirmed</option>
+            <option value="Completed">Completed</option>
+            <option value="Cancelled">Cancelled</option>
+          </select>
+        </div>
+
+        {/* Category Summary */}
         <div className="category-summary">
           <h3>Category Summary</h3>
           {Object.keys(categoryCounts).length === 0 ? (
@@ -72,10 +95,11 @@ const BookingList = () => {
           )}
         </div>
 
-        {bookings.length === 0 ? (
+        {/* Booking List */}
+        {filteredBookings.length === 0 ? (
           <p>No bookings found.</p>
         ) : (
-          bookings.map((booking) => (
+          filteredBookings.map((booking) => (
             <div className="booking-card" key={booking._id}>
               <img
                 src={
@@ -87,11 +111,10 @@ const BookingList = () => {
                 className="profile-image"
               />
 
-              <h3>Name: {booking.serviceExpertId?.listingId?.fullName || "Unknown Expert"}</h3>
+              <h3>ExpertName: {booking.serviceExpertId?.listingId?.fullName || "Unknown Expert"}</h3>
               <p>Service Date: {new Date(booking.serviceDate).toLocaleDateString()}</p>
-              <p>Status: {booking.bookingStatus}</p>
+              <p>Status: <span className={`status-tag ${booking.bookingStatus.toLowerCase()}`}> {booking.bookingStatus}</span></p>
 
-              {/* Display Categories */}
               {booking.categories?.length > 0 && (
                 <div className="category-list">
                   <h4>Categories:</h4>

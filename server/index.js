@@ -12,15 +12,18 @@ const bookingRoutes = require("./routes/booking.js");
 const userRoutes = require("./routes/user.js");
 const adminRoutes = require("./routes/admin.js");
 const ratingRoutes = require("./routes/ratingandreview.js");
+const paymentRoutes = require("./routes/payment.js");
 
 const app = express();
 
 // Middleware for security and logging
 app.use(cors());
-app.use(express.json());
+app.use(express.json({ limit: "20mb" }));
+app.use(express.urlencoded({ limit: "20mb", extended: true }));
 app.use(express.static("public"));
 app.use(helmet()); // Adds security headers to protect against common vulnerabilities
 app.use(morgan("dev")); // Logs all incoming requests (use "combined" in production for more detailed logs)
+
 
 /* ROUTES */
 app.use("/auth", authRoutes);
@@ -29,6 +32,7 @@ app.use("/api/bookings", bookingRoutes);
 app.use("/users", userRoutes); // This will use the routes defined in user.js
 app.use("/api/admin", adminRoutes);
 app.use("/api/ratings", ratingRoutes);
+app.use("/api/payment", paymentRoutes)
 
 
 /* MONGOOSE SETUP */

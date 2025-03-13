@@ -1,31 +1,28 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
-import "../styles/ManageBookings.scss"
+import "../styles/ManageBookings.scss";
 import { setBookingList } from "../redux/state";
-import Navbar from "../components/Navbar";
-
+import Navbar from "../components/AdminNavbar";
 
 const ManageBooking = () => {
   const dispatch = useDispatch();
   const token = useSelector((state) => state.token);
   const [bookings, setBookings] = useState([]);
+  const [expandedBooking, setExpandedBooking] = useState(null);
 
   useEffect(() => {
-    if (!token ) {
+    if (!token) {
       setBookings([]);
       return;
     }
 
     const fetchBookings = async () => {
       try {
-        console.log("token", token);
         const { data } = await axios.get(
           `http://localhost:3001/api/admin/bookings/all`,
           { headers: { Authorization: `Bearer ${token}` } }
         );
-
-        console.log("Fetched Bookings:", data);
         setBookings(data);
         dispatch(setBookingList(data.map((booking) => booking._id)));
       } catch (error) {
@@ -54,11 +51,15 @@ const ManageBooking = () => {
     }
   };
 
+  const toggleExpand = (bookingId) => {
+    setExpandedBooking(expandedBooking === bookingId ? null : bookingId);
+  };
+
   return (
     <div>
       <Navbar />
       <div className="manage-booking-container">
-        <h2>Manage Your Bookings</h2>
+        <h2>Manage Bookings</h2>
 
         {bookings.length === 0 ? (
           <p>No bookings available.</p>
@@ -75,21 +76,93 @@ const ManageBooking = () => {
                 className="profile-image"
               />
 
-              <h3>Name: {booking.serviceExpertId?.listingId?.fullName || "Unknown Expert"}</h3>
-              <p>Service Date: {new Date(booking.serviceDate).toLocaleDateString()}</p>
-              <p>Status: {booking.bookingStatus}</p>
+              <div className="booking-info">
+                <h3>ExpertName: {booking.serviceExpertId?.listingId?.fullName || "Unknown Expert"}</h3>
+                <p>Service Date: {new Date(booking.serviceDate).toLocaleDateString()}</p>
+                <p>Status: {booking.bookingStatus}</p>
+                <p>User: {booking.userId.firstName} {booking.userId.lastName}</p>
+                <p>Email: {booking.userId.email}</p>
+              </div>
 
-              {/* Cancel Button */}
-              {booking.bookingStatus !== "Cancelled" && (
-                <button className="cancel-button" onClick={() => handleCancelBooking(booking._id)}>
-                  Cancel Booking
-                </button>
+              {/* Expand Details Button */}
+              <button className="expand-button" onClick={() => toggleExpand(booking._id)}>
+                {expandedBooking === booking._id ? "Hide Details" : "View Details"}
+              </button>
+
+              {/* Expanded Booking Details */}
+              {expandedBooking === booking._id && (
+                <div className="expanded-section">
+                  <h4>Appliance Details</h4>
+                  <ul>
+                    {booking.categories.map((category, index) => (
+                      <li key={index}>
+                        <strong>{category.label}</strong> - {category.count} Units - ₹{category.cost}
+                        {category.warrantyStartDate && (
+                          <p>
+                            Warranty: {category.warrantyYears} Years ({category.warrantyStatus})
+                          </p>
+                        )}
+                      </li>
+                    ))}
+                  </ul>
+
+                  {/* Appliance Images */}
+                  <div className="image-grid">
+                    {booking.applianceImages.map((image, index) => (
+                      <img key={index} src={`http://localhost:3001/${image}`} alt="Appliance" className="appliance-image" />
+                    ))}
+                  </div>
+
+                  {/* Warranty Card */}
+                  {booking.warrantyCard && (
+                    <div className="warranty-card">
+                      <h4>Warranty Card</h4>
+                      <a href={`http://localhost:3001/${booking.warrantyCard}`} target="_blank" rel="noopener noreferrer">
+                        View Warranty Card
+                      </a>
+                    </div>
+                  )}
+
+                 {/* Proofs Section */}
+{booking.proofs.length > 0 && (
+  <div className="proof-section">
+    <h4>Proofs</h4>
+    <div className="proof-grid">
+      {booking.proofs.map((proof, index) => {
+        const fileUrl = `http://localhost:3001/${proof}`;
+        const isPdf = proof.toLowerCase().endsWith(".pdf");
+
+        return (
+          <div key={index} className="proof-item">
+            {isPdf ? (
+              // Show PDF link with an icon
+              <a href={fileUrl} target="_blank" rel="noopener noreferrer" className="pdf-link">
+                📄 View PDF
+              </a>
+            ) : (
+              // Show image preview
+              <a href={fileUrl} target="_blank" rel="noopener noreferrer">
+                <img src={fileUrl} alt="Proof" className="proof-image" />
+              </a>
+            )}
+          </div>
+        );
+      })}
+    </div>
+  </div>
+)}
+
+
+                  <p><strong>Mobile:</strong> {booking.mobileNo}</p>
+                  <p><strong>Address:</strong> {booking.address}</p>
+                  <p><strong>TotalAmount:</strong> {booking.totalAmount}</p>
+                 
+                </div>
               )}
             </div>
           ))
         )}
       </div>
-     
     </div>
   );
 };

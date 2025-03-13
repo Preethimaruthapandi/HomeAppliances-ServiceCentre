@@ -27,6 +27,8 @@ const bookingSchema = new mongoose.Schema({
   warrantyCard: { type: String }, // URL or path of the uploaded warranty card
   proofs: [{ type: String }], // URLs or paths of additional proof images
   totalAmount: { type: Number, required: true },
+  mobileNo: { type: String, required: true }, // Added mobile number
+  address: { type: String, required: true }, // Added address
   bookingStatus: {
     type: String,
     enum: ["Pending", "Confirmed", "Completed", "Cancelled"],

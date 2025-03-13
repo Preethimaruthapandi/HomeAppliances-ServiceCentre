@@ -100,7 +100,6 @@ const Navbar = () => {
               <>
                 <Link to={`/${user._id}/wishList`}>Wish List ❤️</Link>
                 <Link to={`/${user._id}/bookinglist`}>Booking List 💌</Link>
-                <Link to={`/${user._id}/servicehistory`}>Service History 📑</Link>
                 <Link to="/create-listing">Publish your service profile ✨</Link>
                 <Link to="/">Home 🍁</Link>
 
