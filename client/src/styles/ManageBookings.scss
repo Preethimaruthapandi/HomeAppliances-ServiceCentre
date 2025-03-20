@@ -2,7 +2,7 @@
   max-width: 1200px;
   margin: auto;
   padding: 2rem;
-  background:white;
+  background: white;
   border-radius: 10px;
 
   h2 {
@@ -10,6 +10,42 @@
     margin-bottom: 1.5rem;
     font-size: 2rem;
     color: #F8395A;
+  }
+
+  /* ✅ Filter Dropdown Styling */
+  .filter-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+
+    label {
+      font-size: 1.3rem;
+      font-weight: bold;
+      margin-right: 10px;
+      color: #3f23f2;
+    }
+
+    select {
+      padding: 8px 12px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      font-size: 1rem;
+      cursor: pointer;
+      background: #f9f9f9;
+      transition: all 0.3s;
+      width: 1000px;
+
+      &:focus {
+        border-color: #F8395A;
+        outline: none;
+        box-shadow: 0 0 5px rgba(248, 57, 90, 0.5);
+      }
+
+      &:hover {
+        background: #f0f0f0;
+      }
+    }
   }
 
   .booking-card {
@@ -73,21 +109,22 @@
       }
     }
   }
+
   .proof-section {
     margin-top: 1rem;
-  
+
     h4 {
       margin-bottom: 0.5rem;
       font-size: 1.2rem;
       color: #333;
     }
-  
+
     .proof-grid {
       display: flex;
       flex-wrap: wrap;
       gap: 10px;
     }
-  
+
     .proof-item {
       display: flex;
       align-items: center;
@@ -98,13 +135,13 @@
       border-radius: 5px;
       overflow: hidden;
       background: #f9f9f9;
-  
+
       .proof-image {
         width: 100%;
         height: 100%;
         object-fit: cover;
       }
-  
+
       .pdf-link {
         text-decoration: none;
         font-weight: bold;
@@ -113,5 +150,4 @@
       }
     }
   }
-  
 }

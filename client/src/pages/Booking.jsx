@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useSelector } from "react-redux";
 import { Box, TextField, Button, Typography,  IconButton  } from "@mui/material";
@@ -39,6 +39,7 @@ const BookingPage = () => {
   const [address, setAddress] = useState("");
   const [mobileError, setMobileError] = useState("");
   const [isPaymentSuccessful, setIsPaymentSuccessful] = useState(false);
+  const [paymentId, setPaymentId] = useState("");
 
 
   useEffect(() => {
@@ -207,6 +208,20 @@ const BookingPage = () => {
       }
     };
 
+    const checkServiceDateAvailability = async (selectedDate) => {
+      try {
+        const response = await axios.get(`http://localhost:3001/api/bookings/check-date`, {
+          params: { serviceExpertId, serviceDate: selectedDate },
+        });
+    
+        return response.data.isAvailable; // Returns true if available
+      } catch (error) {
+        console.error("Error checking service date:", error);
+        return false; // Assume unavailable if there's an error
+      }
+    };
+    
+  const navigate = useNavigate(); 
 
   const handleBooking = async () => {
   if (!Object.keys(selectedCategories).length || uploadedPhotos.length === 0 || !serviceDate) {
@@ -224,6 +239,13 @@ const BookingPage = () => {
     discount = 0.2; // 20% discount
   }
 
+   // ✅ Check if selected service date is available
+   const isAvailable = await checkServiceDateAvailability(serviceDate);
+   if (!isAvailable) {
+     alert("Selected service date is already booked. Choose another date.");
+     return;
+   }
+
   const totalServiceCharge = calculateTotalServiceCharge();
   const formData = new FormData();
 
@@ -240,6 +262,7 @@ const BookingPage = () => {
   formData.append("serviceDate", serviceDate);
   formData.append("serviceExpertId", serviceExpertId);
   formData.append("totalAmount", Number(totalServiceCharge));
+  formData.append("paymentId", paymentId || ""); // ✅ Include payment ID in booking
   formData.append("mobileNo", mobileNumber);
   formData.append("address", address);
 
@@ -269,6 +292,7 @@ const BookingPage = () => {
     if (response.status === 201) {
       setIsBookingConfirmed(true);
       alert("Service booking confirmed!");
+      navigate("/thank-you");
     }
   } catch (error) {
     console.error("Error booking service:", error);
@@ -562,14 +586,18 @@ const totalAmount = Number(calculateTotalServiceCharge());
 <br />
 
  {/* Razorpay Payment Button (only if totalAmount > 0) */}
- {totalAmount > 0 && (
-        <RazorpayButton
-          id="razorpay-button"
-          amount={totalAmount}
-          onSuccess={() => setIsPaymentSuccessful(true)} // ✅ Update payment status
-        />
-      )}
+{totalAmount > 0 && (
+  <RazorpayButton
+    id="razorpay-button"
+    amount={totalAmount}
+    onSuccess={(paymentId) => {
+      setIsPaymentSuccessful(true);
+      setPaymentId(paymentId); // ✅ Store payment ID
+    }}
+  />
+)}
 
+<br /><br /><br />
       {/* Booking Button - Enabled if payment is successful OR no payment needed */}
       <Button
         variant="contained"

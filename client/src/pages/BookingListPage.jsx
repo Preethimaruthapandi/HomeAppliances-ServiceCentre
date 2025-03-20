@@ -5,6 +5,7 @@ import "../styles/BookingListPage.scss";
 import { setBookingList } from "../redux/state";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
+import { Tooltip, Button } from "@mui/material"; // ✅ Import Button
 
 const BookingList = () => {
   const dispatch = useDispatch();
@@ -57,6 +58,45 @@ const BookingList = () => {
     }
   }, [statusFilter, bookings]);
 
+  // ✅ Tooltip Descriptions for Status
+  const statusTooltips = {
+    Pending: "Booking details sent to the service expert.",
+    Confirmed: "The service expert has confirmed your booking.",
+    Completed: "Your service has been completed successfully.",
+    Cancelled: "This booking has been cancelled.",
+  };
+
+  const handleCancelBooking = async (bookingId, serviceDate) => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const bookingDate = new Date(serviceDate);
+    bookingDate.setHours(0, 0, 0, 0);
+
+    if (today >= bookingDate) {
+      alert("Cancellation is not allowed on or after the service date.");
+      return;
+    }
+
+    try {
+      await axios.patch(
+        `http://localhost:3001/api/bookings/cancel/${bookingId}`,
+        { bookingStatus: "Cancelled" },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      setBookingsState((prevBookings) =>
+        prevBookings.map((booking) =>
+          booking._id === bookingId ? { ...booking, bookingStatus: "Cancelled" } : booking
+        )
+      );
+
+      alert("Booking cancelled successfully!");
+    } catch (error) {
+      console.error("Error cancelling booking:", error);
+    }
+  };
+
   return (
     <div>
       <Navbar />
@@ -99,34 +139,70 @@ const BookingList = () => {
         {filteredBookings.length === 0 ? (
           <p>No bookings found.</p>
         ) : (
-          filteredBookings.map((booking) => (
-            <div className="booking-card" key={booking._id}>
-              <img
-                src={
-                  booking.serviceExpertId?.listingId?.user?.profileImagePath
-                    ? `http://localhost:3001/${booking.serviceExpertId.listingId.user.profileImagePath}`
-                    : "/default-avatar.png"
-                }
-                alt={booking.serviceExpertId?.listingId?.fullName || "Service Expert"}
-                className="profile-image"
-              />
+          filteredBookings.map((booking) => {
+            const serviceDate = new Date(booking.serviceDate);
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            serviceDate.setHours(0, 0, 0, 0);
 
-              <h3>ExpertName: {booking.serviceExpertId?.listingId?.fullName || "Unknown Expert"}</h3>
-              <p>Service Date: {new Date(booking.serviceDate).toLocaleDateString()}</p>
-              <p>Status: <span className={`status-tag ${booking.bookingStatus.toLowerCase()}`}> {booking.bookingStatus}</span></p>
+            const canCancel = today < serviceDate; // ✅ Only allow cancellation if today is before service date
 
-              {booking.categories?.length > 0 && (
-                <div className="category-list">
-                  <h4>Categories:</h4>
-                  <ul>
-                    {booking.categories.map((category) => (
-                      <li key={category._id}>{category.label}</li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-            </div>
-          ))
+            return (
+              <div className="booking-card" key={booking._id}>
+                <img
+                  src={
+                    booking.serviceExpertId?.listingId?.user?.profileImagePath
+                      ? `http://localhost:3001/${booking.serviceExpertId.listingId.user.profileImagePath}`
+                      : "/default-avatar.png"
+                  }
+                  alt={booking.serviceExpertId?.listingId?.fullName || "Service Expert"}
+                  className="profile-image"
+                />
+
+                <h3>Expert Name: {booking.serviceExpertId?.listingId?.fullName || "Unknown Expert"}</h3>
+                <p>Service Date: {serviceDate.toLocaleDateString()}</p>
+
+                {/* ✅ Status with Tooltip */}
+                <Tooltip title={statusTooltips[booking.bookingStatus] || "Unknown Status"}>
+                  <p>
+                    Status:{" "}
+                    <span className={`status-tag ${booking.bookingStatus.toLowerCase()}`}>
+                      {booking.bookingStatus}
+                    </span>
+                  </p>
+                </Tooltip>
+
+                {canCancel && booking.bookingStatus !== "Cancelled" && booking.bookingStatus !== "Completed" && (
+  <Button
+    variant="contained"
+    color="error"
+    onClick={() => handleCancelBooking(booking._id, booking.serviceDate)}
+    size="small" // ✅ Makes button smaller
+    sx={{
+      mt: 1,
+      fontSize: "0.8rem", // ✅ Reduce font size
+      padding: "4px 8px", // ✅ Reduce padding
+      minWidth: "auto", // ✅ Prevents unnecessary width
+    }}
+  >
+    Cancel Booking
+  </Button>
+)}
+
+                {/* Display Categories */}
+                {booking.categories?.length > 0 && (
+                  <div className="category-list">
+                    <h4>Categories:</h4>
+                    <ul>
+                      {booking.categories.map((category) => (
+                        <li key={category._id}>{category.label}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              </div>
+            );
+          })
         )}
       </div>
       <Footer />

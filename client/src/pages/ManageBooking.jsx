@@ -10,6 +10,7 @@ const ManageBooking = () => {
   const token = useSelector((state) => state.token);
   const [bookings, setBookings] = useState([]);
   const [expandedBooking, setExpandedBooking] = useState(null);
+  const [statusFilter, setStatusFilter] = useState("All"); // ✅ Status Filter
 
   useEffect(() => {
     if (!token) {
@@ -55,16 +56,36 @@ const ManageBooking = () => {
     setExpandedBooking(expandedBooking === bookingId ? null : bookingId);
   };
 
+  const filteredBookings = statusFilter === "All"
+    ? bookings
+    : bookings.filter((booking) => booking.bookingStatus === statusFilter);
+
   return (
     <div>
       <Navbar />
       <div className="manage-booking-container">
         <h2>Manage Bookings</h2>
 
-        {bookings.length === 0 ? (
+        {/* ✅ Status Filter */}
+        <div className="filter-container">
+          <label htmlFor="statusFilter">Filter by Status:</label>
+          <select
+            id="statusFilter"
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value)}
+          >
+            <option value="All">All</option>
+            <option value="Pending">Pending</option>
+            <option value="Confirmed">Confirmed</option>
+            <option value="Completed">Completed</option>
+            <option value="Cancelled">Cancelled</option>
+          </select>
+        </div>
+
+        {filteredBookings.length === 0 ? (
           <p>No bookings available.</p>
         ) : (
-          bookings.map((booking) => (
+          filteredBookings.map((booking) => (
             <div className="booking-card" key={booking._id}>
               <img
                 src={
@@ -77,11 +98,12 @@ const ManageBooking = () => {
               />
 
               <div className="booking-info">
-                <h3>ExpertName: {booking.serviceExpertId?.listingId?.fullName || "Unknown Expert"}</h3>
+                <h3>Expert Name: {booking.serviceExpertId?.listingId?.fullName || "Unknown Expert"}</h3>
                 <p>Service Date: {new Date(booking.serviceDate).toLocaleDateString()}</p>
                 <p>Status: {booking.bookingStatus}</p>
                 <p>User: {booking.userId.firstName} {booking.userId.lastName}</p>
                 <p>Email: {booking.userId.email}</p>
+                <p><strong>Payment ID:</strong> {booking.paymentId || "N/A"}</p> {/* ✅ Payment ID */}
               </div>
 
               {/* Expand Details Button */}
@@ -123,40 +145,38 @@ const ManageBooking = () => {
                     </div>
                   )}
 
-                 {/* Proofs Section */}
-{booking.proofs.length > 0 && (
-  <div className="proof-section">
-    <h4>Proofs</h4>
-    <div className="proof-grid">
-      {booking.proofs.map((proof, index) => {
-        const fileUrl = `http://localhost:3001/${proof}`;
-        const isPdf = proof.toLowerCase().endsWith(".pdf");
+                  {/* Proofs Section */}
+                  {booking.proofs.length > 0 && (
+                    <div className="proof-section">
+                      <h4>Proofs</h4>
+                      <div className="proof-grid">
+                        {booking.proofs.map((proof, index) => {
+                          const fileUrl = `http://localhost:3001/${proof}`;
+                          const isPdf = proof.toLowerCase().endsWith(".pdf");
 
-        return (
-          <div key={index} className="proof-item">
-            {isPdf ? (
-              // Show PDF link with an icon
-              <a href={fileUrl} target="_blank" rel="noopener noreferrer" className="pdf-link">
-                📄 View PDF
-              </a>
-            ) : (
-              // Show image preview
-              <a href={fileUrl} target="_blank" rel="noopener noreferrer">
-                <img src={fileUrl} alt="Proof" className="proof-image" />
-              </a>
-            )}
-          </div>
-        );
-      })}
-    </div>
-  </div>
-)}
-
+                          return (
+                            <div key={index} className="proof-item">
+                              {isPdf ? (
+                                <a href={fileUrl} target="_blank" rel="noopener noreferrer" className="pdf-link">
+                                  📄 View PDF
+                                </a>
+                              ) : (
+                                <a href={fileUrl} target="_blank" rel="noopener noreferrer">
+                                  <img src={fileUrl} alt="Proof" className="proof-image" />
+                                </a>
+                              )}
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  )}
 
                   <p><strong>Mobile:</strong> {booking.mobileNo}</p>
                   <p><strong>Address:</strong> {booking.address}</p>
-                  <p><strong>TotalAmount:</strong> {booking.totalAmount}</p>
-                 
+                  <p><strong>Total Amount:</strong> ₹{booking.totalAmount}</p>
+
+                  
                 </div>
               )}
             </div>

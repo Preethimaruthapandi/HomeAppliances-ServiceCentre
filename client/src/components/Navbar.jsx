@@ -38,10 +38,12 @@ const Navbar = () => {
 
   // Function to handle search and redirect to the category page
   const handleSearch = () => {
-    if (search) {
-      navigate(`/experts/category/${search}`); // Navigate to the category page with the search term as the category
+    if (search.trim()) {
+      const formattedSearch = encodeURIComponent(search.trim().toLowerCase()); // Case-insensitive & URL safe
+      navigate(`/experts/category/${formattedSearch}`);
     }
   };
+  
 
   return (
     <div className="navbar">

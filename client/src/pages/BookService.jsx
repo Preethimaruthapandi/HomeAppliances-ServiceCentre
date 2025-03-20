@@ -27,6 +27,7 @@ const BookService = () => {
   const [review, setReview] = useState("");
   const [loading, setLoading] = useState(false);
   const [reviews, setReviews] = useState([]);
+  const [isAvailable, setIsAvailable] = useState(false); // State to track availability
 
   // Fetch reviews based on service ID
   const fetchReviews = async () => {
@@ -46,6 +47,27 @@ const BookService = () => {
   useEffect(() => {
     fetchReviews();
   }, [id]);
+
+  // Fetch service expert availability
+const checkServiceAvailability = async () => {
+  try {
+    const response = await fetch(`http://localhost:3001/api/service-experts/approved?category=${serviceCategory}`);
+    const data = await response.json();
+    if (response.ok && data.length > 0) {
+      const availableExperts = data.some((expert) => expert.listingId.available);
+      setIsAvailable(availableExperts);
+    } else {
+      setIsAvailable(false);
+    }
+  } catch (error) {
+    console.error("Error fetching service availability:", error);
+    setIsAvailable(false);
+  }
+};
+
+useEffect(() => {
+  checkServiceAvailability();
+}, [id]); // Call when the service ID changes
 
   // Submit review with rating
   const handleSubmit = async () => {
@@ -127,9 +149,10 @@ const BookService = () => {
           <button className="submit-button" onClick={handleSubmit} disabled={loading}>
             {loading ? "Submitting..." : "Submit Review"}
           </button>
-          <button className="book-button" onClick={handleBooking}>
-            Book Service
-          </button>
+          <button className="book-button" onClick={handleBooking} disabled={!isAvailable}>
+  {isAvailable ? "Book Service" : "Not Available"}
+</button>
+
         </div>
 
         <div className="reviews-title">Customer Reviews</div>

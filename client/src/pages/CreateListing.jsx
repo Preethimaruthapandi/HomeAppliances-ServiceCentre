@@ -241,7 +241,7 @@ const CreateListing = () => {
         </div>
 
         <div className="form-section">
-          <label className="section-title">Date of Birth</label>
+          <label className="section-title">Date of Birth (Age must be 20 and above)</label>
           <input
             type="date"
             name="dateOfBirth"
@@ -264,7 +264,7 @@ const CreateListing = () => {
         </div>
 
         <div className="form-section">
-          <label className="section-title">Work Experience</label>
+          <label className="section-title">Work Experience (Minimum one year of experience)</label>
           <textarea
             name="workExperience"
             value={formData.workExperience}

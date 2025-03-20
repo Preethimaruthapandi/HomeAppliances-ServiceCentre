@@ -20,8 +20,9 @@ const CategoryPage = () => {
   useEffect(() => {
     const fetchListings = async () => {
       try {
+        const encodedCategory = encodeURIComponent(category.trim());
         const { data } = await axios.get(
-          `http://localhost:3001/api/listings/approved?category=${category}`
+          `http://localhost:3001/api/listings/approved?category=${encodedCategory}`
         );
         setListings(data);
       } catch (error) {

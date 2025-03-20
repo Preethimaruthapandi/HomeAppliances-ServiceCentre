@@ -29,7 +29,7 @@ const RazorpayButton = ({ amount, onSuccess }) => {
           });
   
           alert("Payment Successful!");
-          onSuccess();  // ✅ Notify parent that payment was successful
+          onSuccess(response.razorpay_payment_id); // ✅ Notify parent that payment was successful
         },
         theme: { color: "#3399cc" },
       };
