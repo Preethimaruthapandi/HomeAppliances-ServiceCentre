@@ -10,7 +10,7 @@ const listingSchema = new mongoose.Schema(
     educationalQualifications: { type: String, required: true },
     degreeCertificate: { type: String, required: true }, // Single file path or URL
     technicalCertifications: { type: [String] }, // Array of file paths or URLs
-    workExperience: { type: String }, // Updated to match textarea input from form
+    workExperience: { type: String, required: true }, // Updated to match textarea input from form
     experienceCertificate: { type: String, required: true }, // Single file path or URL
     keySkills: { type: String }, // Updated to match textarea input from form
     serviceReports: { type: String, required: true }, // Array of file paths or URLs for multiple uploads

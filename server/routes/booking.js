@@ -87,7 +87,7 @@ router.post(
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
       const userId = decoded.id;
 
-      const { categories, serviceDate, serviceExpertId, totalAmount,  mobileNo, address } = req.body;
+      const { categories, serviceDate, serviceExpertId, totalAmount,  mobileNo, address,  paymentId } = req.body;
 
       let parsedCategories;
       try {
@@ -120,10 +120,11 @@ router.post(
         return res.status(400).json({ error: "Service date cannot be more than 1 month from today." });
       }
 
+
       const newBooking = new Booking({
         userId,
         categories: parsedCategories,
-        serviceDate,
+        serviceDate, 
         serviceExpertId,
         totalAmount: Number(totalAmount),
         applianceImages: req.files.applianceImages
@@ -136,7 +137,8 @@ router.post(
           ? req.files.proofs.map((file) => `/uploads/${file.filename}`)
           : [],
         mobileNo,
-        address
+        address,
+        paymentId,
       });
 
       const savedBooking = await newBooking.save();
@@ -248,6 +250,23 @@ ${
     }
   }
 );
+
+router.get("/check-date", async (req, res) => {
+  try {
+    const { serviceExpertId, serviceDate } = req.query;
+
+    const existingBooking = await Booking.findOne({
+      serviceExpertId,
+      serviceDate: new Date(serviceDate),
+    });
+
+    res.json({ isAvailable: !existingBooking }); // ✅ true if available, false if already booked
+  } catch (error) {
+    console.error("Error checking service date:", error);
+    res.status(500).json({ isAvailable: false });
+  }
+});
+
 router.get("/confirm/:bookingId", async (req, res) => {
   try {
     console.log("Confirm Booking Request:", req.params.bookingId);
@@ -345,6 +364,46 @@ router.get("/:userId", ensureAuthenticated, async (req, res) => {
   } catch (error) {
     console.error("Error fetching bookings:", error);
     res.status(500).json({ message: "Internal Server Error", error: error.message });
+  }
+});
+
+// ✅ Route to cancel a booking
+router.patch("/cancel/:bookingId", ensureAuthenticated, async (req, res) => {
+  try {
+    const { bookingId } = req.params;
+
+    // Find the booking by ID
+    const booking = await Booking.findById(bookingId);
+    if (!booking) {
+      return res.status(404).json({ message: "Booking not found" });
+    }
+
+    // Check if the booking is already cancelled or completed
+    if (booking.bookingStatus === "Cancelled") {
+      return res.status(400).json({ message: "Booking is already cancelled." });
+    }
+    if (booking.bookingStatus === "Completed") {
+      return res.status(400).json({ message: "Completed bookings cannot be cancelled." });
+    }
+
+    // Prevent cancellation on or after the service date
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // Normalize today to midnight
+    const serviceDate = new Date(booking.serviceDate);
+    serviceDate.setHours(0, 0, 0, 0);
+
+    if (today >= serviceDate) {
+      return res.status(400).json({ message: "Cancellation is not allowed on or after the service date." });
+    }
+
+    // Update the booking status to "Cancelled"
+    booking.bookingStatus = "Cancelled";
+    await booking.save();
+
+    res.status(200).json({ message: "Booking cancelled successfully.", booking });
+  } catch (error) {
+    console.error("Error cancelling booking:", error);
+    res.status(500).json({ message: "Internal Server Error" });
   }
 });
 

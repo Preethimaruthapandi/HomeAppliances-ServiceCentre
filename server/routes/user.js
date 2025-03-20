@@ -52,7 +52,7 @@ router.post("/wishlist-details", ensureAuthenticated, async (req, res) => {
       return res.json([]); // Return an empty array if no wishlist items
     }
 
-    const listings = await ServiceExpert.find({ _id: { $in: wishListIds } }).populate("listingId","fullName");
+    const listings = await ServiceExpert.find({ _id: { $in: wishListIds } }).populate("listingId","fullName available");
     
     console.log(listings);
     res.json(listings);

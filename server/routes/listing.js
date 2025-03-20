@@ -121,16 +121,19 @@ router.get("/approved", async (req, res) => {
   try {
     const approvedListings = await ServiceExpert.find({
       status: "approved",
-      categories: { $elemMatch: { label: category } }
+      "categories.label": { $regex: new RegExp(category, "i") }
     })
-    .populate("listingId", "fulName")
+    .populate({
+      path: "listingId",  // ✅ Ensure proper population of Listing model
+      select: "fullName available profileImagePath", // ✅ Fetch fullName
+    })
     .exec();
 
     if (approvedListings.length === 0) {
       return res.status(404).json({ message: "No approved service experts found for this category" });
     }
 
-    console.log(approvedListings); // Log to check available
+    console.log("approved listing",approvedListings); // Log to check available
 
     res.status(200).json(approvedListings);
   } catch (err) {
@@ -138,7 +141,6 @@ router.get("/approved", async (req, res) => {
     res.status(500).json({ message: "Failed to fetch approved service experts" });
   }
 });
-
 
 // Route to check submission eligibility for the last 6 months
 router.get('/check-submission/:userId', ensureAuthenticated, async (req, res) => {
